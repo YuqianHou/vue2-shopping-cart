@@ -18,7 +18,7 @@
         </el-header>
         <el-main>
           <router-view/>
-          <myCart/>
+          <myCartDrawer/>
         </el-main>
         <el-footer>Yuqian Hou</el-footer>
       </el-container>
@@ -28,12 +28,12 @@
 </template>
 
 <script>
-import MyCart from "@/components/myCart.vue";
+import myCartDrawer from "@/components/myCartDrawer.vue";
 
 export default {
   name: 'App',
   components: {
-    MyCart
+    myCartDrawer
   },
   data(){
     return {

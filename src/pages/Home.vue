@@ -1,54 +1,54 @@
 <template>
   <div>
     <div
-        style="margin: 0 0 20px 24px; background-color: skyblue; display: grid; place-items: center;"
-    >
-      <el-tabs
-          v-model="activeTabName"
-          @tab-click="handleSelectType"
-          style="width: 70%;"
-      >
-        <el-tab-pane label="全部" name="first"></el-tab-pane>
-        <el-tab-pane label="炒菜" name="second"></el-tab-pane>
-        <el-tab-pane label="主食" name="third"></el-tab-pane>
-        <el-tab-pane label="甜点" name="fourth"></el-tab-pane>
-      </el-tabs>
+        style="margin: 0 0 20px 0;">
+<!--      分类筛选-->
+      <div style="margin: 0 0 20px 0;">
+        <el-tabs
+            v-model="activeTabName"
+            @tab-click="handleSelectType"
+            style="width: 100%;display: grid; place-items: center;"
+        >
+          <el-tab-pane label="全部" name="first"></el-tab-pane>
+          <el-tab-pane label="炒菜" name="second"></el-tab-pane>
+          <el-tab-pane label="主食" name="third"></el-tab-pane>
+          <el-tab-pane label="甜点" name="fourth"></el-tab-pane>
+        </el-tabs>
+      </div>
       <div>
         <el-row>
           <el-col
-              :span="4"
+              :span="6"
               v-for="p in productList"
               :key="p.id"
-              :offset="1"
-              style="width: 220px;display: flex;justify-content: center;">
-            <div style="margin-top:15px;">
-              <el-card
-                  shadow="hover"
-                  :body-style="{ padding: '0px' }"
-                  style="width: 220px; text-align: left; cursor:pointer"
-                  @click="openDetail(p)"
-              >
-                <div style="width: 220px; height: 220px; display: flex;justify-content: center; align-items: center;">
-                  <img style="width: 100%" :src=p.prodImg class="image" >
+              style="background-color: skyblue; display: flex;justify-content: center; "
+          >
+            <el-card
+                shadow="hover"
+                :body-style="{ padding: '0px' }"
+                style="width: 220px; margin: 20px 24px 0 24px;text-align: left; cursor:pointer;"
+                @click="openDetail(p)"
+            >
+              <div style="width: 220px; height: 220px; display: flex;justify-content: center; align-items: center;">
+                <img style="width: 100%" :src=p.prodImg class="image" >
+              </div>
+              <div style="padding: 14px;">
+                <div>
+                  <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{p.prodPrice}}</span>
+                  <span style="color: grey; font-size: 10px">销量 {{p.sales}}</span>
                 </div>
-                <div style="padding: 14px;">
-                  <div>
-                    <span style="color: red; font-size: 24px; font-weight: bold">¥{{p.prodPrice}}</span>
-                    <span style="color: grey; font-size: 10px">销量 {{p.sales}}</span>
-                  </div>
-                  <span style="font-weight: bold">{{ p.prodName }}</span>
+                <span style="font-weight: bold">{{ p.prodName }}</span>
 
-                  <div class="bottom clearfix">
-                    <el-button
-                        icon="el-icon-plus"
-                        circle
-                        size="mini"
-                        style="float: right; margin-bottom: 10px"
-                    ></el-button>
-                  </div>
+                <div class="bottom clearfix">
+                  <el-button
+                      icon="el-icon-plus"
+                      circle
+                      size="mini"
+                      style="float: right; margin-bottom: 10px"
+                  ></el-button>
                 </div>
-              </el-card>
-            </div>
+              </div>
+            </el-card>
           </el-col>
         </el-row>
       </div>
@@ -66,18 +66,19 @@
         icon="el-icon-shopping-cart-2"
         type="primary"
         circle
-        style="float: right; margin-bottom: 10px;"
+        style="position: fixed; right: 40px; bottom: 40px;"
+        @click="openCartDrawer"
+        size="large"
     ></el-button>
-    <myCartDrawer ref="myCartDrawer" @addScene="addScene"/>
+    <myCartDrawer ref="myCartDrawer"/>
     <router-view></router-view>
-
   </div>
 </template>
 
 <script>
   export default {
     name: 'Home',
-    components: {myCartDrawer:()=>import('@/components/myCart.vue')},
+    components: {myCartDrawer:()=>import('@/components/myCartDrawer.vue')},
     data() {
       return {
         productList:[
@@ -153,7 +154,11 @@
             name: p.prodName
           }
         })
-      }
+      },
+      //显示购物车抽屉
+      openCartDrawer(){
+        this.$refs.myCartDrawer.view()
+      },
     }
   }
 </script>
