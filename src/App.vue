@@ -1,18 +1,45 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Vue Shopping Cart</title>
+      </head>
+      <body>
+      <el-container>
+        <el-header>
+          <el-input
+              placeholder="请输入想找的食物"
+              prefix-icon="el-icon-search"
+              v-model="input"
+              style="width: 50%"
+          >
+          </el-input>
+        </el-header>
+        <el-main>
+          <router-view/>
+          <myCart/>
+        </el-main>
+        <el-footer>Yuqian Hou</el-footer>
+      </el-container>
+      </body>
+    </html>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MyCart from "@/components/myCart.vue";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    MyCart
+  },
+  data(){
+    return {
+      input: '',
+    }
+  },
 }
 </script>
 
