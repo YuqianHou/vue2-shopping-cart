@@ -15,13 +15,14 @@
           <el-tab-pane label="甜点" name="fourth"></el-tab-pane>
         </el-tabs>
       </div>
+<!--      商品展示卡片列表-->
       <div>
         <el-row>
           <el-col
               :span="6"
-              v-for="p in productList"
+              v-for="p in products"
               :key="p.id"
-              style="background-color: skyblue; display: flex;justify-content: center; "
+              style="display: flex;justify-content: center; "
           >
             <el-card
                 shadow="hover"
@@ -30,21 +31,23 @@
                 @click="openDetail(p)"
             >
               <div style="width: 220px; height: 220px; display: flex;justify-content: center; align-items: center;">
-                <img style="width: 100%" :src=p.prodImg class="image" >
+                <img style="width: 100%" :src="p.img" class="image" >
               </div>
               <div style="padding: 14px;">
                 <div>
-                  <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{p.prodPrice}}</span>
+                  <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{p.price}}        </span>
                   <span style="color: grey; font-size: 10px">销量 {{p.sales}}</span>
                 </div>
-                <span style="font-weight: bold">{{ p.prodName }}</span>
+                <span style="font-weight: bold">{{ p.title }}</span>
 
                 <div class="bottom clearfix">
                   <el-button
+                      :disabled="!p.inventory"
                       icon="el-icon-plus"
                       circle
                       size="mini"
                       style="float: right; margin-bottom: 10px"
+                      @click="addToCart(p)"
                   ></el-button>
                 </div>
               </div>
@@ -54,6 +57,7 @@
       </div>
 
     </div>
+<!--    分页-->
     <div class="block">
       <el-pagination
           background
@@ -61,84 +65,33 @@
           :total="1000">
       </el-pagination>
     </div>
-
-    <el-button
-        icon="el-icon-shopping-cart-2"
-        type="primary"
-        circle
-        style="position: fixed; right: 40px; bottom: 40px;"
-        @click="openCartDrawer"
-        size="large"
-    ></el-button>
+    <el-badge :value="12" style="position: fixed; right: 40px; bottom: 72px;">
+      <el-button
+          icon="el-icon-shopping-cart-2"
+          type="primary"
+          circle
+          style="position: fixed; right: 40px; bottom: 40px;"
+          @click="openCartDrawer"
+          size="large"
+      ></el-button>
+    </el-badge>
     <myCartDrawer ref="myCartDrawer"/>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-  export default {
+import {mapState, mapActions} from "vuex";
+import { currency } from '../currency'
+
+export default {
     name: 'Home',
     components: {myCartDrawer:()=>import('@/components/myCartDrawer.vue')},
+    computed: mapState({
+      products: state => state.products.all
+    }),
     data() {
       return {
-        productList:[
-          {
-            id:'001',
-            prodName:'汉堡',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'002',
-            prodName:'螺蛳粉',
-            prodPrice: 10,
-            prodImg: 'https://img.zcool.cn/community/015cf45c7f8bc3a80120af9a59dc02.jpg@3000w_1l_0o_100sh.jpg',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'003',
-            prodName:'米饭',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'004',
-            prodName:'米饭',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'005',
-            prodName:'米饭',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'006',
-            prodName:'米饭',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-          {
-            id:'007',
-            prodName:'米饭',
-            prodPrice: 10,
-            prodImg: 'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png',
-            sales: 100,
-            isInCart: false,
-          },
-        ],
         activeTabName: 'first'
       }
     },
@@ -151,7 +104,7 @@
           name: 'productDetail',
           params: {
             id: p.id,
-            name: p.prodName
+            name: p.title
           }
         })
       },
@@ -159,8 +112,13 @@
       openCartDrawer(){
         this.$refs.myCartDrawer.view()
       },
+      ...mapActions('cart', ['addToCart']),
+      currency
+    },
+    created() {
+        this.$store.dispatch('products/getAllProducts')
     }
-  }
+}
 </script>
 
 <style scoped>
