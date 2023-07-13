@@ -10,13 +10,13 @@
     >
       <div class="drawer__content" style="margin: 0 16px 16px 16px">
         <div style="margin-left:auto; margin-right:auto; height: 540px">
-          <p v-show="!products.length">
+          <p v-show="!cartProducts.length">
             <span>购物车空空如也，快去点菜吧！</span>
           </p>
           <el-table
-              v-show="products.length"
-              :data="products"
-              :key="products.id"
+              v-show="cartProducts.length"
+              :data="cartProducts"
+              :key="cartProducts.id"
               border
               style="width: 100%">
             <el-table-column
@@ -53,7 +53,7 @@
                       quantity: $event
                     })"
                     :min="0"
-                    :max="products.inventory"
+                    :max="cartProducts.inventory"
                     label="描述文字">
                 </el-input-number>
               </template>
@@ -66,7 +66,7 @@
         >
           <div class="summary">
             <span style="font-size: 16px; color: grey">合计：</span>
-            <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">{{currency(total)}}</span>
+            <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">{{total}}</span>
           </div>
           <el-button
               type="primary"
@@ -84,15 +84,15 @@
 
 <script>
 import {mapGetters, mapMutations, mapState} from 'vuex'
-import { currency } from '../currency'
   export default {
     name: 'myCartDrawer',
     computed:{
+      ...mapState('cart', ['cartProducts']),
       ...mapState({
         checkoutStatus: state => state.cart.checkoutStatus,
         ...mapGetters('cart', {
-          products: 'cartProducts',
-          total: 'cartTotalPrice'
+          // products: 'cartProducts',
+          total: 'totalPrice'
         })
       })
     },
@@ -122,7 +122,6 @@ import { currency } from '../currency'
       };
     },
     methods: {
-      currency,
       view() {
         this.drawer = true
       },

@@ -65,7 +65,8 @@
           :total="1000">
       </el-pagination>
     </div>
-    <el-badge :value="12" style="position: fixed; right: 40px; bottom: 72px;">
+<!--    显示购物车商品总数的提示-->
+    <el-badge :value="totalCount" style="position: fixed; right: 40px; bottom: 72px;">
       <el-button
           icon="el-icon-shopping-cart-2"
           type="primary"
@@ -81,15 +82,18 @@
 </template>
 
 <script>
-import {mapState, mapActions} from "vuex";
-import { currency } from '../currency'
+import {mapState, mapActions, mapMutations, mapGetters} from "vuex";
+// import { currency } from '../currency'
 
 export default {
     name: 'Home',
     components: {myCartDrawer:()=>import('@/components/myCartDrawer.vue')},
-    computed: mapState({
-      products: state => state.products.all
-    }),
+    computed: {
+      // ...mapState('products', ['all']),
+      ...mapState({products: state => state.products.all}),
+      ...mapGetters('cart', ['totalCount']),
+    },
+        // mapState({products: state => state.products.all}),
     data() {
       return {
         activeTabName: 'first'
@@ -112,11 +116,15 @@ export default {
       openCartDrawer(){
         this.$refs.myCartDrawer.view()
       },
-      ...mapActions('cart', ['addToCart']),
-      currency
+      // ...mapActions('cart', ['addToCart']),
+      // currency
+      ...mapActions('products', ['getAllProducts']),
+      ...mapMutations('cart', ['addToCart']),
+
     },
     created() {
-        this.$store.dispatch('products/getAllProducts')
+        // this.$store.dispatch('products/getAllProducts')
+      this.getAllProducts()
     }
 }
 </script>

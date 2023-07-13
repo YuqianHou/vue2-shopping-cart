@@ -2,28 +2,33 @@ import shop from "../../../api/shop";
 import nested from './nested'
 
 const state = () => ({
-    items:[],
+    cartProducts: JSON.parse(window.localStorage.getItem('cart-products')) || [],
     checkoutStatus: null
 })
 
 const getters = {
-    cartProducts: (state, getters, rootState) => {
-        return state.items.map(({ id, quantity }) => {
-            const product = rootState.products.all.find(product => product.id === id)
-            return {
-                id: product.id,
-                title: product.title,
-                price: product.price,
-                img: product.img,
-                quantity
-            }
-        })
+    // cartProducts: (state, getters, rootState) => {
+    //     return state.items.map(({ id, quantity }) => {
+    //         const product = rootState.products.all.find(product => product.id === id)
+    //         return {
+    //             id: product.id,
+    //             title: product.title,
+    //             price: product.price,
+    //             img: product.img,
+    //             quantity
+    //         }
+    //     })
+    // },
+    totalCount (state) {
+        // 返回数组中某个元素的和，用reduce方法
+        // reduce方法接收两个参数，第一个参数是函数，第二个参数是起始数(这里从0开始)
+        // 函数内部接收两个参数，第一个参数是求和变量，第二个数组的元素
+        return state.cartProducts.reduce((total, product) => total + product.quantity, 0)
     },
-
-    cartTotalPrice: (state, getters) => {
-        return getters.cartProducts.reduce((total, product) => {
-            return total + product.price * product.quantity
-        }, 0)
+    totalPrice: (state) => {
+        return state.cartProducts.reduce((total, product) => {
+            return total + Number(product.price)
+        }, 0).toFixed(2)
     }
 }
 
@@ -43,47 +48,44 @@ const actions = {
             commit('setCartItems', { items: savedCartItems })
         }
     },
-    addToCart ({ state, commit }, product) {
-        commit('setCheckoutStatus', null)
-        if (product.inventory > 0) {
-            const cartItem = state.items.find(item => item.id === product.id)
-            if (!cartItem) {
-                commit('pushProductToCart', { id: product.id })
-            } else {
-                commit('increItemQuantity', cartItem)
-            }
-            // remove 1 item from stock
-            commit('products/decreProdInventory', { id: product.id }, { root: true })
-        }
-    },
 
 }
 
 const mutations = {
-    pushProductToCart (state, { id }) {
-        state.items.push({
-            id,
-            quantity: 1
-        })
-    },
-    increItemQuantity (state, { id }) {
-        const cartItem = state.items.find(item => item.id === id)
-        cartItem.quantity++
+    addToCart (state, product) {
+        // commit('setCheckoutStatus', null)
+        if (product.inventory > 0) {
+            const cartItem = state.cartProducts.find(item => item.id === product.id)
+            if (!cartItem) {
+                // commit('pushProductToCart', { id: product.id })
+                state.cartProducts.push({
+                    ...product,
+                    quantity: 1,
+                    totalPrice: product.price
+                })
+            } else {
+                // commit('increItemQuantity', cartItem)
+                cartItem.quantity++
+                cartItem.totalPrice = (cartItem.quantity * cartItem.price).toFixed(2)
+            }
+            // remove 1 item from stock
+            // commit('products/decreProdInventory', { id: product.id }, { root: true })
+        }
     },
     updateItemQuantity (state, { id, quantity }){
-        const cartItem = state.items.find(item => item.id === id)
+        const cartItem = state.cartProducts.find(item => item.id === id)
         if (cartItem) {
             if (quantity <= 0){
                 // 删除商品
                 // 使用数组的findIndex获取索引
-                const index = state.items.findIndex(item => item.id === id)
+                const index = state.cartProducts.findIndex(item => item.id === id)
                 // 判断这个是不是等于-1，如果不是说明有这个商品，就执行后面的删除该元素
                 // splice接收删除元素的索引，第二个元素是删除几个元素，这里写1
-                index !== -1 && state.items.splice(index, 1)
+                index !== -1 && state.cartProducts.splice(index, 1)
                 cartItem.quantity = quantity
             } else {
                 cartItem.quantity = quantity
-                cartItem.cartTotalPrice = quantity * cartItem.price
+                cartItem.totalPrice = (quantity * cartItem.price).toFixed(2)
             }
         }
     },
