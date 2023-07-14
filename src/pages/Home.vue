@@ -7,7 +7,7 @@
         <el-tabs
             v-model="activeTabName"
             @tab-click="handleSelectType"
-            style="width: 100%;display: grid; place-items: center;"
+            style="display: grid; place-items: center;"
         >
           <el-tab-pane label="全部" name="first"></el-tab-pane>
           <el-tab-pane label="炒菜" name="second"></el-tab-pane>
@@ -27,11 +27,19 @@
             <el-card
                 shadow="hover"
                 :body-style="{ padding: '0px' }"
-                style="width: 220px; margin: 20px 24px 0 24px;text-align: left; cursor:pointer;"
+                style="width: 240px; margin: 20px 24px 0 24px;text-align: left; cursor:pointer;"
                 @click="openDetail(p)"
             >
-              <div style="width: 220px; height: 220px; display: flex;justify-content: center; align-items: center;">
-                <img style="width: 100%" :src="p.img" class="image" >
+              <div
+                  style="width: 240px; height: 240px; display: flex;justify-content: center; align-items: center;"
+              >
+                <el-image
+                    style="width: 100%;"
+                    :src="p.img"
+                    :fit="scale-down"
+                >
+                </el-image>
+<!--                <img style="width: 100%" :src="p.img" class="image" >-->
               </div>
               <div style="padding: 14px;">
                 <div>
@@ -61,8 +69,11 @@
     <div class="block">
       <el-pagination
           background
+          :page-size="8"
+          @current-change="handleCurrentChange"
+          :current-page="cardPage.curPage"
           layout="prev, pager, next"
-          :total="1000">
+          :total="products.length">
       </el-pagination>
     </div>
 <!--    显示购物车商品总数的提示-->
@@ -83,6 +94,7 @@
 
 <script>
 import {mapState, mapActions, mapMutations, mapGetters} from "vuex";
+import products from "@/store/modules/products";
 // import { currency } from '../currency'
 
 export default {
@@ -96,12 +108,20 @@ export default {
         // mapState({products: state => state.products.all}),
     data() {
       return {
-        activeTabName: 'first'
+        activeTabName: 'first',
+        cardPage:{
+          curPage:1,
+          totalCount:9,
+          pageSize:8,
+        },
       }
     },
     methods: {
       handleSelectType(tab, event) {
         console.log(tab, event);
+      },
+      handleCurrentChange(val) {
+        console.log(products.size);
       },
       openDetail(p) {
         this.$router.push({
@@ -116,8 +136,8 @@ export default {
       openCartDrawer(){
         this.$refs.myCartDrawer.view()
       },
+
       // ...mapActions('cart', ['addToCart']),
-      // currency
       ...mapActions('products', ['getAllProducts']),
       ...mapMutations('cart', ['addToCart']),
 
