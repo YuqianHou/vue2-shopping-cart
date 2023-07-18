@@ -1,5 +1,6 @@
 import shop from "../../../api/shop";
 import nested from './nested'
+import products from "@/store/modules/products";
 
 const state = () => ({
     // 记录购物车商品数据，从本地获取购物车商品数据，如果没有初始化为空数组
@@ -99,20 +100,25 @@ const mutations = {
     updateItem (state, { prodId, count }){
         const cartItem = state.cartProducts.find(item => item.id === prodId)
         if (cartItem) {
-            cartItem.count = count
-            cartItem.totalPrice = (count * cartItem.price).toFixed(2)
+            if (count <= 0) {
+                const itemIndex = state.cartProducts.findIndex(item => item.id === prodId)
+                itemIndex !== -1 && state.cartProducts.splice(itemIndex, 1)
+            }else{
+                cartItem.count = count
+                cartItem.totalPrice = (count * cartItem.price).toFixed(2)
+            }
         }
     },
-    // 删除购物车商品
+    // 删除商品
+    // 问题：如何实现在数量减为0的时候删除商品，实现过程中商品删除后下一行的商品上移后会显示0，但实际数值不是0，刷新后恢复正常
     deleteCartItem (state, prodId) {
-        // 删除商品
         // 使用数组的findIndex获取索引
-        const index = state.cartProducts.findIndex(item => item.id === prodId)
+        const itemIndex = state.cartProducts.findIndex(item => item.id === prodId)
         // 判断这个是不是等于-1，如果不是说明有这个商品，就执行后面的删除该元素
         // splice接收删除元素的索引，第二个元素是删除几个元素，这里写1
-        index !== -1 && state.cartProducts.splice(index, 1)
+        itemIndex !== -1 && state.cartProducts.splice(itemIndex, 1)
     },
-    // 改变ischecked
+    // 改变勾选状态
     // 改变所有商品
     updateAllChecked (state, checked) {
         // 给每个商品的isChecked属性为checkbox状态

@@ -1,20 +1,28 @@
 <template>
   <div>
-    <div
-        style="margin: 0 0 20px 0;">
+    <el-input
+        placeholder="请输入想找的食物"
+        prefix-icon="el-icon-search"
+        v-model="searchProduct"
+        style="width: 50%"
+        @keydown.enter = "handleSearch"
+    >
+    </el-input>
+    <div style="margin: 20px 0 20px 0;">
+
 <!--      分类筛选-->
-      <div style="margin: 0 0 20px 0;">
-        <el-tabs
-            v-model="activeTabName"
-            @tab-click="handleSelectType"
-            style="display: grid; place-items: center;"
-        >
-          <el-tab-pane label="全部" name="first"></el-tab-pane>
-          <el-tab-pane label="炒菜" name="second"></el-tab-pane>
-          <el-tab-pane label="主食" name="third"></el-tab-pane>
-          <el-tab-pane label="甜点" name="fourth"></el-tab-pane>
-        </el-tabs>
-      </div>
+<!--      <div style="margin: 0 0 20px 0;">-->
+<!--        <el-tabs-->
+<!--            v-model="activeTabName"-->
+<!--            @tab-click="handleSelectType"-->
+<!--            style="display: grid; place-items: center;"-->
+<!--        >-->
+<!--          <el-tab-pane label="全部" name="first"></el-tab-pane>-->
+<!--          <el-tab-pane label="炒菜" name="second"></el-tab-pane>-->
+<!--          <el-tab-pane label="主食" name="third"></el-tab-pane>-->
+<!--          <el-tab-pane label="甜点" name="fourth"></el-tab-pane>-->
+<!--        </el-tabs>-->
+<!--      </div>-->
 <!--      商品展示卡片列表-->
       <div>
         <el-row>
@@ -67,16 +75,16 @@
 
     </div>
 <!--    分页-->
-    <div class="block">
-      <el-pagination
-          background
-          :page-size="8"
-          @current-change="handleCurrentChange"
-          :current-page="cardPage.curPage"
-          layout="prev, pager, next"
-          :total="products.length">
-      </el-pagination>
-    </div>
+<!--    <div class="block">-->
+<!--      <el-pagination-->
+<!--          background-->
+<!--          :page-size="8"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--          :current-page="cardPage.curPage"-->
+<!--          layout="prev, pager, next"-->
+<!--          :total="products.length">-->
+<!--      </el-pagination>-->
+<!--    </div>-->
 <!--    显示购物车商品总数的提示-->
     <el-badge :value="totalCount" style="position: fixed; right: 40px; bottom: 72px;">
       <el-button
@@ -96,7 +104,6 @@
 <script>
 import {mapState, mapActions, mapMutations, mapGetters} from "vuex";
 import products from "@/store/modules/products";
-// import { currency } from '../currency'
 
 export default {
     name: 'Home',
@@ -105,25 +112,26 @@ export default {
       // ...mapState('products', ['all']),
       ...mapState({products: state => state.products.all}),
       ...mapGetters('cart', ['totalCount']),
+
     },
         // mapState({products: state => state.products.all}),
     data() {
       return {
+        searchProduct: '',
         activeTabName: 'first',
-        cardPage:{
-          curPage:1,
-          totalCount:9,
-          pageSize:8,
-        },
+        // cardPage:{
+        //   curPage:1,
+        //   totalCount:9,
+        //   pageSize:8,
+        // },
       }
     },
     methods: {
+      // 分类选择（未开发）
       handleSelectType(tab, event) {
         console.log(tab, event);
       },
-      handleCurrentChange(val) {
-        console.log(products.size);
-      },
+      // 查看商品详情（未开发）
       openDetail(p) {
         this.$router.push({
           name: 'productDetail',
@@ -137,11 +145,8 @@ export default {
       openCartDrawer(){
         this.$refs.myCartDrawer.view()
       },
-
-      // ...mapActions('cart', ['addToCart']),
       ...mapActions('products', ['getAllProducts']),
       ...mapMutations('cart', ['addToCart']),
-
     },
     created() {
         // this.$store.dispatch('products/getAllProducts')

@@ -75,12 +75,12 @@
                       prodId: scope.row.id,
                       count: $event
                     })"
-                    :min="1"
-                    :max="cartProducts.inventory">
+                    :min="0"
+                    :max="scope.row.inventory">
                 </el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="数量">
+            <el-table-column label="操作">
               <template v-slot="scope">
                 <el-button
                     size="mini"

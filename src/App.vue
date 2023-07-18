@@ -7,15 +7,6 @@
       </head>
       <body>
       <el-container>
-        <el-header>
-          <el-input
-              placeholder="请输入想找的食物"
-              prefix-icon="el-icon-search"
-              v-model="input"
-              style="width: 50%"
-          >
-          </el-input>
-        </el-header>
         <el-main>
           <router-view/>
           <myCartDrawer/>
