@@ -34,19 +34,20 @@
                   style="width: 240px; height: 240px; display: flex;justify-content: center; align-items: center;"
               >
                 <el-image
-                    style="width: 100%;"
+                    style="width: 240px; height: 240px;"
                     :src="p.img"
-                    :fit="scale-down"
+                    fit="cover"
                 >
                 </el-image>
 <!--                <img style="width: 100%" :src="p.img" class="image" >-->
               </div>
               <div style="padding: 14px;">
-                <div>
-                  <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{p.price}}        </span>
-                  <span style="color: grey; font-size: 10px">销量 {{p.sales}}</span>
+                <div style="display: flex; justify-content:space-between;">
+                  <div style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{p.price}}        </div>
+                  <div style="color: grey; font-size: 10px; margin-top: 12px">销量 {{p.sales}}</div>
                 </div>
-                <span style="font-weight: bold">{{ p.title }}</span>
+                <div style="font-weight: bold">{{ p.title }}</div>
+                <div style="color: grey; font-size: 10px">库存 {{p.inventory}}</div>
 
                 <div class="bottom clearfix">
                   <el-button

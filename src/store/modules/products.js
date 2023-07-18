@@ -17,14 +17,14 @@ const mutations = {
     setProducts (state, products){
         state.all = products
     },
-    increProdInventory(state, {id}){
-        const product = state.all.find(product => product.id === id)
-        product.inventory++
-    },
-    decreProdInventory(state, {id}){
-        const product = state.all.find(product => product.id === id)
-        product.inventory--
-    }
+    // increProdInventory(state, {id}){
+    //     const product = state.all.find(product => product.id === id)
+    //     product.inventory++
+    // },
+    // decreProdInventory(state, {id}){
+    //     const product = state.all.find(product => product.id === id)
+    //     product.inventory--
+    // }
 }
 
 export default {

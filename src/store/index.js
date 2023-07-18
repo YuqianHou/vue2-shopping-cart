@@ -19,6 +19,12 @@ const myPlugin = store => {
 }
 
 export default new Vuex.Store({
+    state: {
+    },
+    mutations: {
+    },
+    actions: {
+    },
     modules: {
         cart,
         products
