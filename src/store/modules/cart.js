@@ -95,8 +95,8 @@ const mutations = {
             // commit('products/decreProdInventory', { id: product.id }, { root: true })
         }
     },
-    // 更新购物车商品数量
-    updateItemCount (state, { prodId, count }){
+    // 更新商品，并且更新商品数量和总价
+    updateItem (state, { prodId, count }){
         const cartItem = state.cartProducts.find(item => item.id === prodId)
         if (cartItem) {
             cartItem.count = count
@@ -123,9 +123,10 @@ const mutations = {
     // 改变单个商品
     updateItemChecked (state, {checked,prodId}) {
         const cartItem = state.cartProducts.find(item => item.id === prodId)
-        if (cartItem){
-            cartItem.isChecked = checked
-        }
+        // if (cartItem){
+        //     cartItem.isChecked = checked
+        // }
+        cartItem && (cartItem.isChecked = checked)
     },
     setCartItems (state, { items }) {
         state.items = items

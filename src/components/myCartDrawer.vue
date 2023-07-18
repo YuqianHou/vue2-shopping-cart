@@ -22,21 +22,20 @@
           >
             <el-table-column width="55">
               <template v-slot:header>
-                <el-checkbox size="mini" v-model="checkedAll">
-                </el-checkbox>
+                <el-checkbox size="mini" v-model="checkedAll"></el-checkbox>
               </template>
               <template v-slot="scope">
                 <el-checkbox
                     size="mini"
                     :value="scope.row.isChecked"
                     @change="updateItemChecked({
-                      id: scope.row.id,
+                      prodId: scope.row.id,
                       checked: $event
                     })"
-                >
-                </el-checkbox>
+                ></el-checkbox>
               </template>
             </el-table-column>
+<!--            问题：用selection如何实现-->
 <!--            <el-table-column-->
 <!--                type="selection"-->
 <!--                width="55"-->
@@ -68,23 +67,16 @@
             >
             </el-table-column>
             <el-table-column label="数量">
-                <!--              <template v-slot="scope">-->
-<!--                <el-button-->
-<!--                    size="mini"-->
-<!--                    type="danger"-->
-<!--                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
-<!--              </template>-->
               <template v-slot="scope">
                 <el-input-number
                     size="mini"
-                    v-model="scope.row.count"
-                    @change="updateItemCount({
+                    :value="scope.row.count"
+                    @change="updateItem({
                       prodId: scope.row.id,
                       count: $event
                     })"
                     :min="1"
-                    :max="cartProducts.inventory"
-                    label="描述文字">
+                    :max="cartProducts.inventory">
                 </el-input-number>
               </template>
             </el-table-column>
@@ -132,7 +124,7 @@ import {mapGetters, mapMutations, mapState} from 'vuex'
       checkedAll: {
         // 返回当前购物车的商品是否都是选中状态，如果有一个没有选中直接返回false
         get () {
-          return this.cartProducts.every(prod => prod.isChecked)
+          return this.cartProducts.every(product => product.isChecked)
         },
         // 状态改变的时候触发的方法，需要一个参数，checkbox的状态
         set (value) {
@@ -155,7 +147,7 @@ import {mapGetters, mapMutations, mapState} from 'vuex'
         this.drawer = true
       },
       ...mapMutations('cart', [
-        'updateItemCount',
+        'updateItem',
         'updateAllChecked',
         'updateItemChecked',
         'deleteCartItem'
