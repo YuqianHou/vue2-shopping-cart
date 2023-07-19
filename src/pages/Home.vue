@@ -86,7 +86,7 @@
 <!--      </el-pagination>-->
 <!--    </div>-->
 <!--    显示购物车商品总数的提示-->
-    <el-badge :value="totalCount" style="position: fixed; right: 40px; bottom: 72px;">
+    <el-badge :hidden="!totalCount" :value="totalCount" style="position: fixed; right: 40px; bottom: 72px;">
       <el-button
           icon="el-icon-shopping-cart-2"
           type="primary"
