@@ -76,7 +76,7 @@
          'id': 9,
          'title': '拿铁',
          'price': 15,
-         'inventory': 5,
+         'inventory': 0,
          'sales': 100,
          'type': '饮品',
          'img': 'https://ts1.cn.mm.bing.net/th/id/R-C.ec27e3d6f10987f293f05ecc02bfd306?rik=moM3oLsjFVj6VA&riu=http%3a%2f%2fwww.xinmengfood.com%2fuploads%2fallimg%2f20190522%2fbe9a6b7606cc3ff6da0459893e43b7c4.jpg&ehk=oBBmJ50RSD%2bv8mxGlJz7F%2bTl%2f3uWS%2fYoWUd4k4f6NO8%3d&risl=&pid=ImgRaw&r=0',

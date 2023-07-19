@@ -1,5 +1,4 @@
 import shop from "../../../api/shop";
-import nested from './nested'
 import products from "@/store/modules/products";
 
 const state = () => ({
@@ -53,47 +52,28 @@ const getters = {
     }
 }
 
-const actions = {
-    // async checkout ({ commit, state }, products) {
-    //     const savedCartItems = [...state.items]
-    //     commit('setCheckoutStatus', null)
-    //     // empty cart
-    //     commit('setCartItems', { items: [] })
-    //     try {
-    //         await shop.buyProducts(products)
-    //         commit('setCheckoutStatus', 'successful')
-    //     } catch (e) {
-    //         console.error(e)
-    //         commit('setCheckoutStatus', 'failed')
-    //         // rollback to the cart saved before sending the request
-    //         commit('setCartItems', { items: savedCartItems })
-    //     }
-    // },
-}
+const actions = {}
 
 const mutations = {
     addToCart (state, product) {
-        // commit('setCheckoutStatus', null)
         if (product.inventory > 0) {
             const cartItem = state.cartProducts.find(item => item.id === product.id)
             if (!cartItem) {
                 // 添加新商品
-                // commit('pushProductToCart', { id: product.id })
                 state.cartProducts.push({
                     ...product,
                     count: 1,
                     isChecked: true,
                     totalPrice: product.price
                 })
+            } else if(cartItem.count >= cartItem.inventory){
+                console.log(cartItem.title, '库存不足')
             } else {
                 // 已有商品数量+1
-                // commit('increItemQuantity', cartItem)
                 cartItem.count++
                 cartItem.isChecked = true
                 cartItem.totalPrice = (cartItem.count * cartItem.price).toFixed(2)
             }
-            // remove 1 item from stock
-            // commit('products/decreProdInventory', { id: product.id }, { root: true })
         }
     },
     // 更新商品，并且更新商品数量和总价
@@ -103,14 +83,15 @@ const mutations = {
             if (count <= 0) {
                 const itemIndex = state.cartProducts.findIndex(item => item.id === prodId)
                 itemIndex !== -1 && state.cartProducts.splice(itemIndex, 1)
-            }else{
+            }else if(count >= cartItem.inventory){
+                console.log(cartItem.title,'库存不足')
+            } else {
                 cartItem.count = count
                 cartItem.totalPrice = (count * cartItem.price).toFixed(2)
             }
         }
     },
     // 删除商品
-    // 问题：如何实现在数量减为0的时候删除商品，实现过程中商品删除后下一行的商品上移后会显示0，但实际数值不是0，刷新后恢复正常
     deleteCartItem (state, prodId) {
         // 使用数组的findIndex获取索引
         const itemIndex = state.cartProducts.findIndex(item => item.id === prodId)
@@ -129,18 +110,19 @@ const mutations = {
     // 改变单个商品
     updateItemChecked (state, {checked,prodId}) {
         const cartItem = state.cartProducts.find(item => item.id === prodId)
-        // if (cartItem){
-        //     cartItem.isChecked = checked
-        // }
-        cartItem && (cartItem.isChecked = checked)
+        if (cartItem){
+            cartItem.isChecked = checked
+        }
     },
-    setCartItems (state, { items }) {
-        state.items = items
-    },
+    // 结算，库存减少，已结算的从购物车删除
+    checkout (state) {
+        state.cartProducts.forEach(product => {
+            product.inventory -= product.count
+        })
+        state.cartProducts = state.cartProducts.filter(product => !product.isChecked)
+        // this.$refs.drawer.closeDrawer()
 
-    setCheckoutStatus (state, status) {
-        state.checkoutStatus = status
-    }
+    },
 }
 
 export default {
@@ -149,7 +131,4 @@ export default {
     getters,
     actions,
     mutations,
-    modules: {
-        nested
-    }
 }

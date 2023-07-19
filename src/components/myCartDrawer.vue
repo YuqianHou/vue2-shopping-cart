@@ -13,10 +13,12 @@
           <p v-show="!cartProducts.length">
             <span>购物车空空如也，快去点菜吧！</span>
           </p>
+<!--      // 问题(已解决)：如何实现在数量减为0的时候删除商品，实现过程中商品删除后下一行的商品上移后会显示0，但实际数值不是0，刷新后恢复正常-->
+<!--          把:key="cartProducts.id"换成row-key="id"即可-->
           <el-table
               v-show="cartProducts.length"
               :data="cartProducts"
-              :key="cartProducts.id"
+              row-key="id"
               style="width: 100%;"
               max-height="500px"
           >
@@ -35,7 +37,7 @@
                 ></el-checkbox>
               </template>
             </el-table-column>
-<!--            问题：用selection如何实现-->
+<!--            问题：用selection如何实现？应该不行，需手写自定义-->
 <!--            <el-table-column-->
 <!--                type="selection"-->
 <!--                width="55"-->
@@ -95,13 +97,12 @@
             style="display: flex; justify-content:space-between;"
         >
           <div class="summary">
-<!--            <span style="font-size: 16px; color: grey">合计：</span>-->
-<!--            <span style="color: cornflowerblue; font-size: 24px; font-weight: bold">{{total}}</span>-->
             <p>已选 <span>{{ checkedCount }}</span> 件商品，合计：<span style="color: cornflowerblue; font-size: 24px; font-weight: bold">¥{{ checkedPrice }}</span></p>
           </div>
           <el-button
               type="primary"
-              @click="$refs.drawer.closeDrawer()"
+              :disabled="!cartProducts.length"
+              @click="checkout(cartProducts)"
               :loading="loading"
               style="right: 16px"
           >
@@ -120,7 +121,7 @@ import {mapGetters, mapMutations, mapState} from 'vuex'
     computed:{
       ...mapState('cart', ['cartProducts']),
       ...mapGetters('cart', ['checkedCount', 'checkedPrice']),
-      // 父checkbox的状态，因为有get和set所以直接写成对象形式
+      // 父checkbox的状态
       checkedAll: {
         // 返回当前购物车的商品是否都是选中状态，如果有一个没有选中直接返回false
         get () {
@@ -131,9 +132,6 @@ import {mapGetters, mapMutations, mapState} from 'vuex'
           this.updateAllChecked(value)
         }
       },
-      // ...mapState({
-      //   checkoutStatus: state => state.cart.checkoutStatus,
-      // })
     },
     data() {
       return {
@@ -147,13 +145,15 @@ import {mapGetters, mapMutations, mapState} from 'vuex'
         this.drawer = true
       },
       ...mapMutations('cart', [
-        'updateItem',
-        'updateAllChecked',
-        'updateItemChecked',
-        'deleteCartItem'
+          'updateItem',
+          'updateAllChecked',
+          'updateItemChecked',
+          'deleteCartItem',
+          'checkout'
       ]),
       // checkout (products) {
       //   this.$store.dispatch('cart/checkout', products)
+      //   this.$refs.drawer.closeDrawer()
       // },
     },
 

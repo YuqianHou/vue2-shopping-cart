@@ -10,7 +10,7 @@
     </el-input>
     <div style="margin: 20px 0 20px 0;">
 
-<!--      分类筛选-->
+<!--      分类筛选(未开发)-->
 <!--      <div style="margin: 0 0 20px 0;">-->
 <!--        <el-tabs-->
 <!--            v-model="activeTabName"-->
@@ -118,7 +118,7 @@ export default {
     data() {
       return {
         searchProduct: '',
-        activeTabName: 'first',
+        // activeTabName: 'first',
         // cardPage:{
         //   curPage:1,
         //   totalCount:9,
